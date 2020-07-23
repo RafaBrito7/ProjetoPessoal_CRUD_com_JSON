@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
-using Console;
+using System.Linq;
+using static System.Console;
 
 namespace CRUD_Json
 {
@@ -43,6 +45,34 @@ namespace CRUD_Json
             {
 				throw;
             }
+		}
+
+		public void AdicionarEmpresa(string arquivoJson)
+        {
+            Console.WriteLine("Informe o Id da Empresa: ");
+			var empresaId = Console.ReadLine();
+			Console.WriteLine("Informe o Nome da Empresa: ");
+			var nomeEmpresa = Console.ReadLine();
+
+			var novaEmpresaMembro = "{ 'empresaid': " + empresaId + ", 'empresanome': '" + nomeEmpresa + "'}";
+            try
+            {
+				var json = File.ReadAllText(arquivoJson);
+				var jsonObj = JObject.Parse(json);
+				var arrayExperiencias = jsonObj.GetValue("experiencias") as JArray;
+
+				var novaEmpresa = JObject.Parse(novaEmpresaMembro);
+				arrayExperiencias.Add(novaEmpresa);
+
+				jsonObj["experiencias"] = arrayExperiencias;
+				string novoJsonResult = Newtonsoft.Json.JsonCovert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+
+            }
+            catch (Exception)
+            {
+				throw;
+            }
+
 		}
 	}
 
