@@ -18,27 +18,27 @@ namespace CRUD_Json
 
 				if(jObject != null)
                 {
-					Console.WriteLine("ID : " + jObject["id"].ToString());
-					Console.WriteLine("Nome : " + jObject["nome"].ToString());
+					WriteLine("ID : " + jObject["id"].ToString());
+					WriteLine("Nome : " + jObject["nome"].ToString());
 
 					var endereco = jObject["endereco"];
-					Console.WriteLine("Rua : " + endereco["rua"].ToString());
-					Console.WriteLine("Cidade : " + endereco["cidade"].ToString());
-					Console.WriteLine("Cep : " + endereco["cep"].ToString());
+					WriteLine("Rua : " + endereco["rua"].ToString());
+					WriteLine("Cidade : " + endereco["cidade"].ToString());
+					WriteLine("Cep : " + endereco["cep"].ToString());
 
 					JArray arrayExperiencias = (JArray)jObject["experiencias"];
 
                     if(arrayExperiencias != null)
 					{
-						Console.WriteLine("Empresas");
+						WriteLine("Empresas");
 						foreach(var item in arrayExperiencias)
                         {
-							Console.WriteLine("\tId :" + item["empresaid"]);
-							Console.WriteLine("\tEmpresa :" + item["empresanome"].ToString());
+							WriteLine("\tId :" + item["empresaid"]);
+							WriteLine("\tEmpresa :" + item["empresanome"].ToString());
                         }
                     }
-					Console.WriteLine("Telefone : " + jObject["telefone"].ToString());
-					Console.WriteLine("Cargo : " + jObject["cargo"].ToString());
+					WriteLine("Telefone : " + jObject["telefone"].ToString());
+					WriteLine("Cargo : " + jObject["cargo"].ToString());
 				}
             }
             catch(Exception)
@@ -47,11 +47,12 @@ namespace CRUD_Json
             }
 		}
 
+		// Adicionando Empresa (CREATE)
 		public void AdicionarEmpresa(string arquivoJson)
         {
-            Console.WriteLine("Informe o Id da Empresa: ");
+            WriteLine("Informe o Id da Empresa: ");
 			var empresaId = Console.ReadLine();
-			Console.WriteLine("Informe o Nome da Empresa: ");
+			WriteLine("Informe o Nome da Empresa: ");
 			var nomeEmpresa = Console.ReadLine();
 
 			var novaEmpresaMembro = "{ 'empresaid': " + empresaId + ", 'empresanome': '" + nomeEmpresa + "'}";
@@ -66,14 +67,51 @@ namespace CRUD_Json
 
 				jsonObj["experiencias"] = arrayExperiencias;
 				string novoJsonResult = Newtonsoft.Json.JsonCovert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+				File.WriteAllText(arquivoJson, novoJsonResult);
 
+            }
+            catch (Exception ex)
+            {
+				WriteLine("Erro ao adicionar: " + ex.Message.ToString());
+            }
+		}
+
+		// Deletando Empresa (DELEATE)
+		public void DeletarEmpresa(string arquivoJson)
+        {
+			var json = File.ReadAllText(arquivoJson);
+            try
+            {
+				var jObject = jObject.Parse(json);
+				JArray arrayExperiencias = (JArray)jObject["experiencias"];
+				Write("Informe o ID da empresa a deletar: ");
+				var empresaId = Convert.ToInt32(Console.ReadLine());
+
+				if(empresaId > 0)
+                {
+					var nomeEmpresa = string.Empty;
+					var empresaADeletar = arrayExperiencias.FirstOrDefault(obj =>
+					   obj["empresaid"].Value<int>() == empresaId);
+
+					arrayExperiencias.Remove(empresaADeletar);
+
+					string saida = Newtonsoft.Json.JsonConvert.SerializeObject(jObject,
+								   Newtonsoft.Json.Formatting.Indented);
+
+					File.WriteAllText(arquivoJson, saida);
+
+                }
+                else
+                {
+					WriteLine("O ID da empresa é inválido ou não existe, tente novamente!");
+					AtualizarEmpresa(arquivoJson);
+                }
             }
             catch (Exception)
             {
 				throw;
             }
-
-		}
+        }
 	}
 
 }
