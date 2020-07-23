@@ -1,0 +1,25 @@
+{
+  "id": 123,
+  "nome": "Jose Carlos Macoratti",
+  "endereco": {
+    "rua": "Rua Mirassol, 100",
+    "cidade": "Campinas",
+    "cep": 13095014
+  },
+  "experiencias": [
+    {
+      "empresaid": 22,
+      "empresanome": "Microsoft"
+    },
+    {
+      "empesaid": 54,
+      "empersanamo": "JcmSoft"
+    },
+    {
+      "empresaid": 67,
+      "empresanome": "IncSoft"
+    }
+  ],
+  "telefone": 123464422,
+  "cargo": "Desenvolvedor C#"
+}  
